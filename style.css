@@ -1,0 +1,684 @@
+/* ============================================================
+   校途职居 — Morandi Organic Modern 风格表
+   ============================================================ */
+
+/* ----- CSS 自定义属性 ----- */
+:root {
+  --morandi-bg:       #F5F0EB;
+  --morandi-card:     #FDFAF6;
+  --morandi-primary:  #8B9D83;
+  --morandi-primary-l:#A3B899;
+  --morandi-secondary:#C4A882;
+  --morandi-secondary-l:#D4C4A8;
+  --morandi-accent:   #B5838D;
+  --morandi-accent-l: #C99BA5;
+  --morandi-dark:     #4A4A4A;
+  --morandi-light:    #8B8B8B;
+  --morandi-border:   #E8E0D5;
+  --morandi-danger:   #C5837B;
+  --shadow-soft:      0 2px 16px rgba(74, 74, 74, 0.05);
+  --shadow-hover:     0 6px 28px rgba(74, 74, 74, 0.09);
+  --radius-sm:        10px;
+  --radius-md:        16px;
+  --radius-lg:        24px;
+  --radius-full:      9999px;
+}
+
+/* ----- 基础样式 ----- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--morandi-bg);
+  color: var(--morandi-dark);
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ----- 滚动条美化 ----- */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--morandi-border); border-radius: 4px; }
+
+/* ============================================================
+   有机装饰 Blob
+   ============================================================ */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+.blob-1 { background: var(--morandi-primary);  width: 300px; height: 300px; top: -80px;  right: -60px; }
+.blob-2 { background: var(--morandi-secondary); width: 260px; height: 260px; top: 40%;   left: -80px; }
+.blob-3 { background: var(--morandi-accent);   width: 240px; height: 240px; bottom: -60px; right: 30%; }
+.blob-4 { background: var(--morandi-primary-l); width: 200px; height: 200px; top: 15%;   right: 45%; opacity: 0.08; }
+
+/* ============================================================
+   卡片组件
+   ============================================================ */
+.card-morandi {
+  background: var(--morandi-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+.card-morandi:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+.card-morandi-flat {
+  background: var(--morandi-card);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 6px rgba(74, 74, 74, 0.03);
+}
+.card-morandi-lg {
+  background: var(--morandi-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ============================================================
+   按钮组件
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--morandi-primary);
+  color: #fff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(139, 157, 131, 0.3);
+  white-space: nowrap;
+}
+.btn-primary:hover { filter: brightness(1.06); box-shadow: 0 4px 18px rgba(139, 157, 131, 0.4); }
+.btn-primary:active { transform: scale(0.97); filter: brightness(0.95); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--morandi-secondary);
+  color: #fff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(196, 168, 130, 0.3);
+  white-space: nowrap;
+}
+.btn-secondary:hover { filter: brightness(1.06); box-shadow: 0 4px 18px rgba(196, 168, 130, 0.4); }
+.btn-secondary:active { transform: scale(0.97); }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--morandi-primary);
+  padding: 11px 28px;
+  border: 1.5px solid var(--morandi-primary);
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.btn-outline:hover { background: rgba(139, 157, 131, 0.06); }
+
+.btn-sm { padding: 8px 18px; font-size: 13px; border-radius: 10px; }
+.btn-lg { padding: 14px 36px; font-size: 16px; border-radius: 16px; }
+.btn-block { width: 100%; }
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--morandi-danger);
+  color: #fff;
+  padding: 11px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.btn-danger:hover { filter: brightness(1.06); }
+
+/* ============================================================
+   输入框
+   ============================================================ */
+.input-morandi {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid var(--morandi-border);
+  border-radius: 14px;
+  background: var(--morandi-card);
+  font-size: 15px;
+  color: var(--morandi-dark);
+  outline: none;
+  transition: all 0.25s ease;
+}
+.input-morandi:focus {
+  border-color: var(--morandi-primary);
+  box-shadow: 0 0 0 3px rgba(139, 157, 131, 0.1);
+}
+.input-morandi::placeholder { color: var(--morandi-light); }
+
+textarea.input-morandi { resize: vertical; min-height: 100px; }
+
+select.input-morandi {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%238B8B8B'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+/* ============================================================
+   标签/badge
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-primary   { background: rgba(139, 157, 131, 0.12); color: var(--morandi-primary); }
+.badge-secondary { background: rgba(196, 168, 130, 0.12); color: var(--morandi-secondary); }
+.badge-accent    { background: rgba(181, 131, 141, 0.12); color: var(--morandi-accent); }
+.badge-success   { background: rgba(139, 157, 131, 0.15); color: #5C8A5C; }
+.badge-warning   { background: rgba(196, 168, 130, 0.18); color: #A08060; }
+.badge-danger    { background: rgba(197, 131, 123, 0.12); color: var(--morandi-danger); }
+.badge-outline   { background: transparent; border: 1px solid var(--morandi-border); color: var(--morandi-light); }
+
+/* ============================================================
+   导航 Tab
+   ============================================================ */
+.tab-bar {
+  background: var(--morandi-card);
+  border-top: 1px solid var(--morandi-border);
+  padding: 8px 0 12px;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--morandi-light);
+  transition: color 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.tab-item i { font-size: 22px; margin-bottom: 2px; }
+.tab-item span { font-size: 11px; }
+.tab-item.active { color: var(--morandi-primary); }
+
+/* ============================================================
+   桌面导航
+   ============================================================ */
+.nav-desktop {
+  background: rgba(253, 250, 246, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--morandi-border);
+}
+.nav-link {
+  color: var(--morandi-light);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.nav-link:hover { color: var(--morandi-dark); background: rgba(139, 157, 131, 0.06); }
+.nav-link.active { color: var(--morandi-primary); font-weight: 600; }
+
+/* ============================================================
+   筛选标签 (药丸)
+   ============================================================ */
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--morandi-border);
+  background: #fff;
+  color: var(--morandi-dark);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--morandi-primary); color: var(--morandi-primary); }
+.filter-pill.active {
+  background: var(--morandi-primary);
+  color: #fff;
+  border-color: var(--morandi-primary);
+}
+
+/* ============================================================
+   地图占位容器
+   ============================================================ */
+.map-placeholder {
+  width: 100%;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(139, 157, 131, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 60% 70%, rgba(196, 168, 130, 0.2) 0%, transparent 55%),
+    #EDE8E2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+}
+.map-placeholder i { color: var(--morandi-primary); opacity: 0.35; }
+.map-placeholder span { color: var(--morandi-light); font-size: 14px; margin-top: 8px; }
+
+/* ============================================================
+   头像
+   ============================================================ */
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(74, 74, 74, 0.08);
+}
+.avatar-sm { width: 36px; height: 36px; }
+.avatar-md { width: 48px; height: 48px; }
+.avatar-lg { width: 64px; height: 64px; }
+.avatar-xl { width: 80px; height: 80px; }
+
+/* ============================================================
+   上传区域
+   ============================================================ */
+.upload-zone {
+  border: 2px dashed var(--morandi-border);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: rgba(253, 250, 246, 0.5);
+}
+.upload-zone:hover {
+  border-color: var(--morandi-primary);
+  background: rgba(139, 157, 131, 0.04);
+}
+.upload-zone i { font-size: 32px; color: var(--morandi-light); margin-bottom: 8px; }
+
+/* ============================================================
+   分割线
+   ============================================================ */
+.divider {
+  height: 1px;
+  background: var(--morandi-border);
+  margin: 0;
+}
+
+/* ============================================================
+   提示/状态小圆点
+   ============================================================ */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.status-dot-online  { background: var(--morandi-primary); }
+.status-dot-pending { background: var(--morandi-secondary); }
+.status-dot-error   { background: var(--morandi-danger); }
+
+/* ============================================================
+   动画
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeInUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.slide-up { animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+/* ============================================================
+   弹窗/Modal
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(74, 74, 74, 0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+.modal-overlay:not(.hidden) {
+  display: flex;
+}
+.modal-content {
+  background: var(--morandi-card);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 12px 48px rgba(74, 74, 74, 0.12);
+  animation: fadeInUp 0.3s ease;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-title { font-size: 18px; font-weight: 600; }
+
+/* ============================================================
+   图片轮播指示器
+   ============================================================ */
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transition: all 0.3s ease;
+}
+.carousel-dot.active { background: #fff; width: 24px; border-radius: 4px; }
+
+/* ============================================================
+   设施图标网格
+   ============================================================ */
+.facility-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+}
+.facility-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(139, 157, 131, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.facility-icon i { font-size: 18px; color: var(--morandi-primary); }
+.facility-item span { font-size: 11px; color: var(--morandi-light); }
+
+/* ============================================================
+   统计卡片 (管理端/房东端)
+   ============================================================ */
+.stat-card {
+  background: var(--morandi-card);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.stat-value { font-size: 28px; font-weight: 700; color: var(--morandi-dark); }
+.stat-label { font-size: 13px; color: var(--morandi-light); margin-top: 2px; }
+
+/* ============================================================
+   响应式工具
+   ============================================================ */
+@media (max-width: 767px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: flex !important; }
+  .container-padding { padding-left: 16px; padding-right: 16px; }
+}
+@media (min-width: 768px) {
+  .hide-desktop { display: none !important; }
+  .show-desktop { display: flex !important; }
+  .container-padding { padding-left: 32px; padding-right: 32px; }
+}
+
+/* ============================================================
+   房东端/管理端 侧边栏
+   ============================================================ */
+.sidebar {
+  background: var(--morandi-card);
+  border-right: 1px solid var(--morandi-border);
+  width: 240px;
+  min-height: 100vh;
+  padding: 20px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  color: var(--morandi-light);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  margin: 2px 0;
+}
+.sidebar-link:hover { color: var(--morandi-dark); background: rgba(139, 157, 131, 0.04); }
+.sidebar-link.active {
+  color: var(--morandi-primary);
+  background: rgba(139, 157, 131, 0.08);
+  border-left-color: var(--morandi-primary);
+}
+.sidebar-brand {
+  padding: 0 24px 20px;
+  border-bottom: 1px solid var(--morandi-border);
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   表格样式 (管理端)
+   ============================================================ */
+.table-morandi {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table-morandi th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--morandi-light);
+  border-bottom: 2px solid var(--morandi-border);
+  background: rgba(253, 250, 246, 0.6);
+}
+.table-morandi td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--morandi-border);
+}
+.table-morandi tr:hover td { background: rgba(139, 157, 131, 0.03); }
+
+/* ============================================================
+   图表占位区
+   ============================================================ */
+.chart-placeholder {
+  background: var(--morandi-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--morandi-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--morandi-light);
+}
+
+/* ============================================================
+   消息气泡
+   ============================================================ */
+.msg-bubble-left {
+  background: rgba(139, 157, 131, 0.08);
+  border-radius: 16px 16px 16px 4px;
+  padding: 12px 16px;
+  max-width: 75%;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.msg-bubble-right {
+  background: var(--morandi-primary);
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+  padding: 12px 16px;
+  max-width: 75%;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   骨架屏 (可后续启用)
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(90deg, var(--morandi-border) 25%, #f0ece6 50%, var(--morandi-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   Fixed bottom bar (详情页)
+   ============================================================ */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(253, 250, 246, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--morandi-border);
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  z-index: 50;
+}
+/* 为底部栏留出安全空间 */
+.safe-bottom { padding-bottom: 80px; }
+
+/* ============================================================
+   图片容器
+   ============================================================ */
+.img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.img-rounded { border-radius: 12px; }
+.img-rounded-lg { border-radius: var(--radius-md); }
+
+/* ============================================================
+   文字工具
+   ============================================================ */
+.line-clamp-1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.line-clamp-2 { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+/* ============================================================
+   图标圆形底座
+   ============================================================ */
+.icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.icon-circle-primary   { background: rgba(139, 157, 131, 0.1); color: var(--morandi-primary); }
+.icon-circle-secondary { background: rgba(196, 168, 130, 0.1); color: var(--morandi-secondary); }
+.icon-circle-accent    { background: rgba(181, 131, 141, 0.1); color: var(--morandi-accent); }
+.icon-circle-danger    { background: rgba(197, 131, 123, 0.1); color: var(--morandi-danger); }
+
+/* ============================================================
+   开关 (Toggle)
+   ============================================================ */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--morandi-border);
+  border-radius: var(--radius-full);
+  transition: 0.3s;
+  cursor: pointer;
+}
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 20px; height: 20px;
+  left: 2px; top: 2px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.toggle input:checked + .toggle-slider { background: var(--morandi-primary); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
