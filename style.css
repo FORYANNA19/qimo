@@ -4,8 +4,8 @@
 
 /* ----- CSS 自定义属性 ----- */
 :root {
-  --morandi-bg:       #F5F0EB;
-  --morandi-card:     #FDFAF6;
+  --morandi-bg:       #F9F9F9;
+  --morandi-card:     #FFFFFF;
   --morandi-primary:  #8B9D83;
   --morandi-primary-l:#A3B899;
   --morandi-secondary:#C4A882;
@@ -222,6 +222,11 @@ select.input-morandi {
   background: var(--morandi-card);
   border-top: 1px solid var(--morandi-border);
   padding: 8px 0 12px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
 }
 .tab-item {
   display: flex;
