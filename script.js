@@ -67,6 +67,42 @@ function updateNavLinks(pageId) {
   }
 }
 
+var TAB_CONFIGS = {
+  student: [
+    { icon: 'fa-home', label: '首页', page: 'home-page', fn: 'showStudent' },
+    { icon: 'fa-building', label: '租房', page: 'housing-list-page', fn: 'showStudent' },
+    { icon: 'fa-car', label: '通勤', page: 'commute-list-page', fn: 'showStudent' },
+    { icon: 'fa-comments', label: '消息', page: 'chat-messages-page', fn: 'showStudent' },
+    { icon: 'fa-user', label: '我的', page: 'profile-page', fn: 'showStudent' }
+  ],
+  landlord: [
+    { icon: 'fa-home', label: '首页', page: 'home-page', fn: 'showStudent' },
+    { icon: 'fa-building', label: '房源', page: 'landlord-housing-page', fn: 'showLandlord' },
+    { icon: 'fa-calendar', label: '看房', page: 'landlord-viewings-page', fn: 'showLandlord' },
+    { icon: 'fa-comments', label: '消息', page: 'landlord-messages-page', fn: 'showLandlord' },
+    { icon: 'fa-user', label: '我的', page: 'landlord-dashboard-page', fn: 'showLandlord' }
+  ],
+  admin: [
+    { icon: 'fa-home', label: '首页', page: 'home-page', fn: 'showStudent' },
+    { icon: 'fa-check-circle', label: '审核', page: 'admin-housing-review-page', fn: 'showAdmin' },
+    { icon: 'fa-gavel', label: '投诉', page: 'admin-disputes-page', fn: 'showAdmin' },
+    { icon: 'fa-comments', label: '消息', page: 'chat-messages-page', fn: 'showAdmin' },
+    { icon: 'fa-user', label: '我的', page: 'admin-dashboard-page', fn: 'showAdmin' }
+  ]
+};
+
+function renderMobileTabBar(role) {
+  var bar = document.getElementById('tab-bar');
+  if (!bar) return;
+  var cfg = TAB_CONFIGS[role] || TAB_CONFIGS['student'];
+  var html = '<div class="flex justify-around">';
+  cfg.forEach(function(item) {
+    html += '<div class="tab-item" data-fn="' + item.fn + '" data-page="' + item.page + '"><i class="fa ' + item.icon + '"></i><span>' + item.label + '</span></div>';
+  });
+  html += '</div>';
+  bar.innerHTML = html;
+}
+
 var pageManager = {
   currentRole: 'student',
   currentUser: null,
@@ -81,37 +117,33 @@ var pageManager = {
     var el = document.getElementById(pageId);
     if (el) { el.classList.remove('hidden'); el.scrollTop = 0; }
     window.scrollTo(0, 0);
-    // 控制底部 Tab
-    var tabBar = document.querySelector('.tab-bar');
-    if (tabBar) {
-      if (this.currentRole === 'student') tabBar.style.display = '';
-      else tabBar.style.display = 'none';
-    }
   },
 
   showStudent: function(pageId) {
-    this.currentRole = 'student';
+    if (!this.currentUser) this.currentRole = 'student';
     if (!pageId.endsWith('-page')) pageId += '-page';
     this.show(pageId);
-    this.updateTabBar(pageId);
+    this.markTabActive(pageId);
     updateNavLinks(pageId);
     if (pageId === 'chat-messages-page' && this.isLoggedIn()) renderChatList('chat-list', 'student');
   },
 
   showLandlord: function(pageId) {
-    this.currentRole = 'landlord';
+    if (!this.currentUser) this.currentRole = 'landlord';
     if (!pageId.endsWith('-page')) pageId += '-page';
     this.show(pageId);
     this.updateLandlordSidebar(pageId);
+    this.markTabActive(pageId);
     updateNavLinks(pageId);
     if (pageId === 'landlord-messages-page') renderChatList('landlord-chat-list', 'landlord');
   },
 
   showAdmin: function(pageId) {
-    this.currentRole = 'admin';
+    if (!this.currentUser) this.currentRole = 'admin';
     if (!pageId.endsWith('-page')) pageId += '-page';
     this.show(pageId);
     this.updateAdminSidebar(pageId);
+    this.markTabActive(pageId);
     updateNavLinks(pageId);
     if (pageId === 'chat-messages-page') renderChatList('chat-list', 'admin');
   },
@@ -120,6 +152,7 @@ var pageManager = {
     this.currentUser = PRESET_ACCOUNTS[role];
     this.currentRole = role;
     this.updateAuthUI();
+    renderMobileTabBar(role);
     if (role === 'student') this.showStudent('home-page');
     else if (role === 'landlord') this.showLandlord('landlord-dashboard-page');
     else if (role === 'admin') this.showAdmin('admin-dashboard-page');
@@ -129,7 +162,7 @@ var pageManager = {
     this.currentUser = null;
     this.currentRole = 'student';
     this.updateAuthUI();
-    document.querySelector('.tab-bar').style.display = '';
+    renderMobileTabBar('student');
     this.showStudent('home-page');
   },
 
@@ -138,7 +171,6 @@ var pageManager = {
   updateAuthUI: function() {
     var authArea = document.getElementById('desktop-auth-area');
     var guestBanner = document.getElementById('guest-banner');
-    var tabProfile = document.getElementById('tab-profile');
 
     if (this.isLoggedIn()) {
       if (authArea) {
@@ -156,11 +188,6 @@ var pageManager = {
         if (logoutBtn) logoutBtn.addEventListener('click', function() { pageManager.logout(); });
       }
       if (guestBanner) guestBanner.style.display = 'none';
-      if (tabProfile) { tabProfile.dataset.page = 'profile'; tabProfile.onclick = function() {
-        if (pageManager.currentUser.role === 'landlord') pageManager.showLandlord('landlord-dashboard-page');
-        else if (pageManager.currentUser.role === 'admin') pageManager.showAdmin('admin-dashboard-page');
-        else pageManager.showStudent('profile-page');
-      }; }
     } else {
       if (authArea) {
         authArea.innerHTML = '<button class="btn-outline btn-sm" id="desktop-login-btn">登录</button>';
@@ -168,23 +195,33 @@ var pageManager = {
         if (loginBtn) loginBtn.addEventListener('click', function() { pageManager.showStudent('login-page'); });
       }
       if (guestBanner) guestBanner.style.display = '';
-      if (tabProfile) { tabProfile.dataset.page = 'login'; tabProfile.onclick = function() { pageManager.showStudent('login-page'); }; }
     }
   },
 
-  updateTabBar: function(pageId) {
-    document.querySelectorAll('.tab-item').forEach(function(item) {
-      item.classList.remove('active');
-      var dp = item.dataset.page;
-      if ((dp === 'home' && pageId === 'home-page') ||
-          (dp === 'housing-list' && (pageId === 'housing-list-page' || pageId === 'housing-detail-page' || pageId === 'housing-map-page')) ||
-          (dp === 'commute-list' && (pageId === 'commute-list-page' || pageId === 'commute-detail-page' || pageId === 'commute-publish-page')) ||
-          (dp === 'chat-messages' && pageId === 'chat-messages-page') ||
-          (dp === 'profile' && pageId === 'profile-page') ||
-          (dp === 'login' && pageId === 'login-page')) {
-        item.classList.add('active');
-      }
-    });
+  markTabActive: function(pageId) {
+    var role = this.currentUser ? this.currentUser.role : 'student';
+    var cfg = TAB_CONFIGS[role] || TAB_CONFIGS['student'];
+    var items = document.querySelectorAll('#tab-bar .tab-item');
+    items.forEach(function(item) { item.classList.remove('active'); });
+    var matched = -1;
+    if (/^home-page$/.test(pageId)) matched = 0;
+    else if (role === 'student') {
+      if (/^housing-/.test(pageId)) matched = 1;
+      else if (/^commute-/.test(pageId)) matched = 2;
+      else if (/^chat-messages/.test(pageId)) matched = 3;
+      else if (/^profile-/.test(pageId)) matched = 4;
+    } else if (role === 'landlord') {
+      if (pageId === 'landlord-housing-page' || pageId === 'landlord-housing-detail-page' || pageId === 'landlord-housing-create-page') matched = 1;
+      else if (pageId === 'landlord-viewings-page') matched = 2;
+      else if (pageId === 'landlord-messages-page') matched = 3;
+      else if (pageId === 'landlord-dashboard-page') matched = 4;
+    } else if (role === 'admin') {
+      if (pageId === 'admin-housing-review-page') matched = 1;
+      else if (pageId === 'admin-disputes-page') matched = 2;
+      else if (pageId === 'chat-messages-page') matched = 3;
+      else if (pageId === 'admin-dashboard-page') matched = 4;
+    }
+    if (matched >= 0 && items[matched]) items[matched].classList.add('active');
   },
 
   updateLandlordSidebar: function(pageId) {
@@ -268,22 +305,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // === 底部 Tab ===
-  document.querySelectorAll('.tab-item').forEach(function(item) {
-    item.addEventListener('click', function() {
-      var page = item.dataset.page;
-      // 游客点击消息/我的 → 登录页
-      if ((page === 'chat-messages' || page === 'profile' || page === 'login') && !pageManager.isLoggedIn()) {
-        pageManager.showStudent('login-page');
-        return;
-      }
-      var pageMap = {
-        'home': 'home-page', 'housing-list': 'housing-list-page',
-        'commute-list': 'commute-list-page', 'chat-messages': 'chat-messages-page',
-        'profile': 'profile-page', 'login': 'login-page'
-      };
-      if (pageMap[page]) pageManager.showStudent(pageMap[page]);
-    });
+  // === 底部 Tab — 事件委托 ===
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) tabBar.addEventListener('click', function(e) {
+    var item = e.target.closest('.tab-item');
+    if (!item) return;
+    var page = item.dataset.page, fn = item.dataset.fn;
+    if ((page === 'chat-messages-page' || page === 'profile-page' || page === 'landlord-messages-page') && !pageManager.isLoggedIn()) {
+      pageManager.showStudent('login-page'); return;
+    }
+    if (fn === 'showStudent') pageManager.showStudent(page);
+    else if (fn === 'showLandlord') pageManager.showLandlord(page);
+    else if (fn === 'showAdmin') pageManager.showAdmin(page);
   });
 
   // === data-page 跳转 ===
@@ -401,5 +434,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // === 初始化 ===
+  renderMobileTabBar('student');
   pageManager.showStudent('home-page');
 });
