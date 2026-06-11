@@ -8,6 +8,65 @@ var PRESET_ACCOUNTS = {
   admin: { role: 'admin', name: '管理员', phone: 'admin', avatar: 'https://randomuser.me/api/portraits/women/68.jpg' }
 };
 
+var CHAT_DATA = {
+  student: [
+    { name: '房东张先生', avatar: 'https://randomuser.me/api/portraits/men/22.jpg', preview: '好的，明天下午2点看房没问题', time: '刚刚', unread: 3, online: true },
+    { name: '合租室友李同学', avatar: 'https://randomuser.me/api/portraits/women/44.jpg', preview: '我看了那套房，感觉还不错，你觉得呢？', time: '5分钟前', unread: 0 },
+    { name: '拼车伙伴陈同学', avatar: 'https://randomuser.me/api/portraits/women/33.jpg', preview: '明天早上8点校门口集合，别迟到哦', time: '昨天', unread: 0 },
+    { name: '校途职居小助手', icon: 'fa-bullhorn', preview: '暑期实习租房优惠活动已上线，优质房源限时特惠', time: '周三', unread: 0 }
+  ],
+  landlord: [
+    { name: '学生张同学', avatar: 'https://randomuser.me/api/portraits/men/32.jpg', preview: '请问近徐家汇那套LOFT还在吗？我想预约看房', time: '刚刚', unread: 2, online: true },
+    { name: '学生李同学', avatar: 'https://randomuser.me/api/portraits/women/44.jpg', preview: '好的，我明天下午2点过来看房', time: '10分钟前', unread: 0 },
+    { name: '学生王同学', avatar: 'https://randomuser.me/api/portraits/men/67.jpg', preview: '可以短租3个月吗？', time: '昨天', unread: 0 },
+    { name: '平台通知', icon: 'fa-bullhorn', preview: '您的房源已通过审核，现已在平台展示', time: '周一', unread: 0 }
+  ],
+  admin: [
+    { name: '运营管理员小李', avatar: 'https://randomuser.me/api/portraits/women/45.jpg', preview: '今天有5个新房源待审核，请尽快处理', time: '刚刚', unread: 1, online: true },
+    { name: '客服主管', avatar: 'https://randomuser.me/api/portraits/women/50.jpg', preview: '昨天有2起投诉需要仲裁处理', time: '1小时前', unread: 0 },
+    { name: '系统通知', icon: 'fa-bullhorn', preview: '本周新增注册学生286人，房东12人', time: '周一', unread: 0 },
+    { name: '运营管理群', icon: 'fa-users', preview: '暑期租房活动策划方案已上传，请查阅', time: '昨天', unread: 0 }
+  ]
+};
+
+function renderChatList(containerId, role) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  var data = CHAT_DATA[role] || CHAT_DATA['student'];
+  var html = '';
+  data.forEach(function(item) {
+    var avatarHtml;
+    if (item.icon) {
+      avatarHtml = '<div style="width:48px;height:48px;border-radius:14px;background:rgba(139,157,131,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa ' + item.icon + ' text-morandi-primary"></i></div>';
+    } else if (item.online) {
+      avatarHtml = '<div class="relative"><img src="' + item.avatar + '" alt="头像" class="avatar avatar-md"><span class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-morandi-primary border-2 border-white"></span></div>';
+    } else {
+      avatarHtml = '<img src="' + item.avatar + '" alt="头像" class="avatar avatar-md">';
+    }
+    var unreadHtml = item.unread > 0 ? '<span class="badge badge-primary text-xs">' + item.unread + '</span>' : '';
+    html += '<div class="card-morandi p-3 flex items-center gap-3 cursor-pointer hover:bg-morandi-primary/5 transition-morandi">'
+      + avatarHtml
+      + '<div class="flex-1 min-w-0"><div class="flex justify-between items-baseline"><span class="text-sm font-medium">' + item.name + '</span><span class="text-xs text-morandi-light">' + item.time + '</span></div><p class="text-xs text-morandi-light mt-0.5 line-clamp-1">' + item.preview + '</p></div>'
+      + unreadHtml
+      + '</div>';
+  });
+  html += '<div class="text-center py-6"><span class="text-xs text-morandi-light">暂无更多消息</span></div>';
+  container.innerHTML = html;
+}
+
+function updateNavLinks(pageId) {
+  document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active'); });
+  var nav = null;
+  if (/^(home|profile|messages|verify|login)-page$/.test(pageId)) nav = 'home';
+  else if (/^housing-/.test(pageId)) nav = 'housing';
+  else if (/^commute-/.test(pageId)) nav = 'commute';
+  else if (/chat-messages-page|landlord-messages-page/.test(pageId)) nav = 'chat';
+  if (nav) {
+    var link = document.querySelector('.nav-link[data-nav="' + nav + '"]');
+    if (link) link.classList.add('active');
+  }
+}
+
 var pageManager = {
   currentRole: 'student',
   currentUser: null,
@@ -35,6 +94,8 @@ var pageManager = {
     if (!pageId.endsWith('-page')) pageId += '-page';
     this.show(pageId);
     this.updateTabBar(pageId);
+    updateNavLinks(pageId);
+    if (pageId === 'chat-messages-page' && this.isLoggedIn()) renderChatList('chat-list', 'student');
   },
 
   showLandlord: function(pageId) {
@@ -42,6 +103,8 @@ var pageManager = {
     if (!pageId.endsWith('-page')) pageId += '-page';
     this.show(pageId);
     this.updateLandlordSidebar(pageId);
+    updateNavLinks(pageId);
+    if (pageId === 'landlord-messages-page') renderChatList('landlord-chat-list', 'landlord');
   },
 
   showAdmin: function(pageId) {
@@ -49,6 +112,8 @@ var pageManager = {
     if (!pageId.endsWith('-page')) pageId += '-page';
     this.show(pageId);
     this.updateAdminSidebar(pageId);
+    updateNavLinks(pageId);
+    if (pageId === 'chat-messages-page') renderChatList('chat-list', 'admin');
   },
 
   login: function(role) {
@@ -82,12 +147,20 @@ var pageManager = {
           + '<span class="text-sm font-medium">' + this.currentUser.name + '</span></span>'
           + '<span class="text-xs text-morandi-light cursor-pointer hover:text-morandi-danger ml-2" id="desktop-logout-btn">退出</span>';
         var inner = document.getElementById('desktop-profile-inner');
-        if (inner) inner.addEventListener('click', function() { pageManager.showStudent('profile-page'); });
+        if (inner) inner.addEventListener('click', function() {
+          if (pageManager.currentUser.role === 'landlord') pageManager.showLandlord('landlord-dashboard-page');
+          else if (pageManager.currentUser.role === 'admin') pageManager.showAdmin('admin-dashboard-page');
+          else pageManager.showStudent('profile-page');
+        });
         var logoutBtn = document.getElementById('desktop-logout-btn');
         if (logoutBtn) logoutBtn.addEventListener('click', function() { pageManager.logout(); });
       }
       if (guestBanner) guestBanner.style.display = 'none';
-      if (tabProfile) { tabProfile.dataset.page = 'profile'; tabProfile.onclick = function() { pageManager.showStudent('profile-page'); }; }
+      if (tabProfile) { tabProfile.dataset.page = 'profile'; tabProfile.onclick = function() {
+        if (pageManager.currentUser.role === 'landlord') pageManager.showLandlord('landlord-dashboard-page');
+        else if (pageManager.currentUser.role === 'admin') pageManager.showAdmin('admin-dashboard-page');
+        else pageManager.showStudent('profile-page');
+      }; }
     } else {
       if (authArea) {
         authArea.innerHTML = '<button class="btn-outline btn-sm" id="desktop-login-btn">登录</button>';
@@ -182,10 +255,16 @@ document.addEventListener('DOMContentLoaded', function() {
     link.addEventListener('click', function(e) {
       e.preventDefault();
       var nav = link.dataset.nav;
-      var navMap = { 'home': 'home-page', 'housing': 'housing-list-page', 'commute': 'commute-list-page', 'chat': 'chat-messages-page' };
-      if (navMap[nav]) pageManager.showStudent(navMap[nav]);
-      document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active'); });
-      link.classList.add('active');
+      if (nav === 'chat') {
+        if (!pageManager.isLoggedIn()) { pageManager.showStudent('login-page'); return; }
+        var role = pageManager.currentUser.role;
+        if (role === 'landlord') pageManager.showLandlord('landlord-messages-page');
+        else if (role === 'admin') { pageManager.show('chat-messages-page'); renderChatList('chat-list', 'admin'); }
+        else pageManager.showStudent('chat-messages-page');
+      } else {
+        var navMap = { 'home': 'home-page', 'housing': 'housing-list-page', 'commute': 'commute-list-page' };
+        if (navMap[nav]) pageManager.showStudent(navMap[nav]);
+      }
     });
   });
 
@@ -294,7 +373,11 @@ document.addEventListener('DOMContentLoaded', function() {
     l.addEventListener('click', function(e) { e.preventDefault(); pageManager.showLandlord(l.dataset.landlordPage + '-page'); });
   });
   document.querySelectorAll('[data-admin-page]').forEach(function(l) {
-    l.addEventListener('click', function(e) { e.preventDefault(); pageManager.showAdmin(l.dataset.adminPage + '-page'); });
+    l.addEventListener('click', function(e) { e.preventDefault();
+      var dp = l.dataset.adminPage;
+      if (dp === 'admin-chat') { pageManager.show('chat-messages-page'); renderChatList('chat-list', 'admin'); }
+      else pageManager.showAdmin(dp + '-page');
+    });
   });
 
   // === 返回学生端 ===

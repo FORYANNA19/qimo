@@ -687,3 +687,15 @@ select.input-morandi {
 }
 .toggle input:checked + .toggle-slider { background: var(--morandi-primary); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ============================================================
+   管理端按钮统一尺寸
+   ============================================================ */
+#admin-users-page button,
+#admin-housing-review-page button,
+#admin-content-page button,
+#admin-disputes-page button {
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 10px;
+}
