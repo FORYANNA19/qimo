@@ -284,8 +284,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (verifyBackBtn) verifyBackBtn.addEventListener('click', function() { pageManager.showStudent('login-page'); });
 
   // === 手机端个人中心退出 ===
-  var mobileLogoutBtn = document.getElementById('mobile-logout-btn');
-  if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', function() { pageManager.logout(); });
+  var profileLogoutRow = document.getElementById('profile-logout-row');
+  if (profileLogoutRow) profileLogoutRow.addEventListener('click', function() { pageManager.logout(); });
 
   // === 桌面导航栏 ===
   document.querySelectorAll('.nav-link').forEach(function(link) {
